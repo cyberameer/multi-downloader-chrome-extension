@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Instant Multi Downloader Pro</title>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #7209b7;
+      --success: #00d26a;
+      --warning: #ff6b6b;
+      --background: #0f0f23;
+      --card: #1a1a2e;
+      --text: #ffffff;
+      --text-light: #b8b8d0;
+      --border: #2d2d4d;
+      --accent: #00f5ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+      color: var(--text-light);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .stat-success { color: var(--success); }
+    .stat-warning { color: var(--warning); }
+    .stat-primary { color: var(--primary); }
+    .stat-accent { color: var(--accent); }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-light);
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-section {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 30px;
+      border: 1px solid var(--border);
+    }
+
+    .control-section {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 30px;
+      border: 1px solid var(--border);
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      z-index: 2;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 15px 15px 15px 50px;
+      background: rgba(255,255,255,0.05);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      color: var(--text);
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      background: rgba(255,255,255,0.08);
+    }
+
+    textarea {
+      height: 300px;
+      resize: vertical;
+      min-height: 200px;
+      max-height: 500px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+    }
+
+    .control-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .btn {
+      padding: 15px 25px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success), #00b894);
+      color: white;
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, var(--warning), #ff4757);
+      color: white;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .progress-section {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 30px;
+      border: 1px solid var(--border);
+      margin-bottom: 30px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .progress-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .progress-container {
+      margin-bottom: 25px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), var(--accent));
+      border-radius: 10px;
+      transition: width 0.3s ease;
+      width: 0%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .downloads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .download-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .download-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .download-card.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .download-card.failed {
+      border-left: 4px solid var(--warning);
+    }
+
+    .download-card.downloading {
+      border-left: 4px solid var(--accent);
+      animation: pulse-border 1.5s infinite;
+    }
+
+    @keyframes pulse-border {
+      0% { border-left-color: var(--accent); }
+      50% { border-left-color: var(--primary); }
+      100% { border-left-color: var(--accent); }
+    }
+
+    .download-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .download-filename {
+      font-weight: 600;
+      font-size: 12px;
+      flex: 1;
+      word-break: break-all;
+      margin-right: 10px;
+    }
+
+    .download-status {
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .status-success { background: var(--success); color: white; }
+    .status-failed { background: var(--warning); color: white; }
+    .status-downloading { background: var(--accent); color: black; }
+    .status-pending { background: var(--text-light); color: white; }
+
+    .download-url {
+      font-size: 10px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    .download-progress {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+
+    .download-progress-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .download-speed {
+      font-size: 10px;
+      color: var(--text-light);
+      text-align: right;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      max-width: 400px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success { border-left-color: var(--success); }
+    .notification.warning { border-left-color: var(--warning); }
+    .notification.error { border-left-color: var(--warning); }
+
+    .material-icons {
+      font-size: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .quick-btn {
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .quick-btn:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--primary);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-light);
+    }
+
+    .empty-state .material-icons {
+      font-size: 48px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <span class="material-icons">rocket_launch</span>
+        </div>
+        <div>
+          <h1>Instant Multi Downloader Pro</h1>
+          <p>Ultra-fast parallel downloads with real-time monitoring</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number stat-primary" id="totalFiles">0</div>
+        <div class="stat-label">Total Files</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number stat-success" id="completedFiles">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number stat-warning" id="failedFiles">0</div>
+        <div class="stat-label">Failed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number stat-accent" id="activeDownloads">0</div>
+        <div class="stat-label">Active Now</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Input Section -->
+      <div class="input-section">
+        <div class="section-title">
+          <span class="material-icons">input</span>
+          Download URLs
+        </div>
+        
+        <div class="form-group">
+          <label for="urls">
+            <span class="material-icons">link</span>
+            URLs (one per line):
+          </label>
+          <div class="input-with-icon">
+            <span class="material-icons input-icon">code</span>
+            <textarea id="urls" placeholder="https://example.com/file1.js&#10;https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js&#10;https://github.com/logo.png"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="folderName">
+            <span class="material-icons">folder</span>
+            Download Folder:
+          </label>
+          <div class="input-with-icon">
+            <span class="material-icons input-icon">create_new_folder</span>
+            <input type="text" id="folderName" placeholder="instant-downloads" value="instant-downloads">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="concurrentDownloads">
+            <span class="material-icons">speed</span>
+            Concurrent Downloads:
+          </label>
+          <select id="concurrentDownloads">
+            <option value="5">5 (Fast)</option>
+            <option value="10" selected>10 (Very Fast)</option>
+            <option value="15">15 (Ultra Fast)</option>
+            <option value="20">20 (Extreme - Use with caution)</option>
+          </select>
+        </div>
+
+        <div class="control-buttons">
+          <button class="btn btn-secondary" id="clearBtn">
+            <span class="material-icons">clear_all</span>
+            Clear All
+          </button>
+          <button class="btn btn-primary" id="downloadBtn">
+            <span class="material-icons">rocket_launch</span>
+            Start Instant Download
+          </button>
+        </div>
+      </div>
+
+      <!-- Control Section -->
+      <div class="control-section">
+        <div class="section-title">
+          <span class="material-icons">tune</span>
+          Quick Controls
+        </div>
+
+        <div class="form-group">
+          <label for="autoRetry">
+            <span class="material-icons">replay</span>
+            Auto Retry Failed:
+          </label>
+          <select id="autoRetry">
+            <option value="0">No Retry</option>
+            <option value="1">1 Retry</option>
+            <option value="2" selected>2 Retries</option>
+            <option value="3">3 Retries</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="timeout">
+            <span class="material-icons">timer</span>
+            Timeout (seconds):
+          </label>
+          <select id="timeout">
+            <option value="5">5s</option>
+            <option value="10" selected>10s</option>
+            <option value="15">15s</option>
+            <option value="30">30s</option>
+          </select>
+        </div>
+
+        <div class="quick-actions">
+          <button class="quick-btn" id="pauseBtn">
+            <span class="material-icons">pause</span>
+            Pause
+          </button>
+          <button class="quick-btn" id="resumeBtn">
+            <span class="material-icons">play_arrow</span>
+            Resume
+          </button>
+          <button class="quick-btn" id="retryFailedBtn">
+            <span class="material-icons">refresh</span>
+            Retry Failed
+          </button>
+          <button class="quick-btn" id="exportListBtn">
+            <span class="material-icons">list_alt</span>
+            Export List
+          </button>
+        </div>
+
+        <div class="control-buttons" style="margin-top: 20px;">
+          <button class="btn btn-warning" id="stopBtn">
+            <span class="material-icons">stop</span>
+            Stop All
+          </button>
+          <button class="btn btn-success" id="saveSessionBtn">
+            <span class="material-icons">save</span>
+            Save Session
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Section -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <div class="section-title">
+          <span class="material-icons">analytics</span>
+          Download Progress
+        </div>
+        <div class="progress-info">
+          <span id="progressText">0/0 files</span>
+          <span id="progressPercent">0%</span>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="progress-stats">
+        <div class="stat-card">
+          <div class="stat-number" id="speedStat">0 KB/s</div>
+          <div class="stat-label">Download Speed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="timeRemaining">--:--</div>
+          <div class="stat-label">Time Remaining</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="successRate">100%</div>
+          <div class="stat-label">Success Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="elapsedTime">00:00</div>
+          <div class="stat-label">Elapsed Time</div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span class="material-icons">view_list</span>
+        Active Downloads
+      </div>
+
+      <div class="downloads-grid" id="downloadsGrid">
+        <div class="empty-state" id="emptyState">
+          <span class="material-icons">download</span>
+          <p>No active downloads. Add URLs and click "Start Instant Download"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification">
+    <span class="material-icons" id="notificationIcon">info</span>
+    <span id="notificationText">Notification message</span>
+  </div>
+
+  <script src="downloader.js"></script>
+</body>
+</html>
